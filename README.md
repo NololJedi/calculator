@@ -1,0 +1,1 @@
+Calculator on JavaScript. You can also use keyboard - [0-9+=-/* c - clear all. d - delete last]
