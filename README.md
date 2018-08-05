@@ -1,1 +1,1 @@
-Calculator on JavaScript. You can also use keyboard - [0-9+=-/* c - clear all. d - delete last]
+Calculator on JavaScript using Bootstrap and Jquery. You can also use keyboard - [0-9+=-/* c - clear all. d - delete last]
