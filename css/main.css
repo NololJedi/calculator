@@ -1,0 +1,30 @@
+
+.number {
+
+}
+
+.operation {
+
+}
+
+.calculator-container {
+    border-radius: 5px;
+    padding: 10px;
+    margin: 20% auto;
+    width: 270px;
+    background-color: darkgrey;
+@include make-container();
+}
+
+.view{
+    width: 250px;
+    box-sizing: border-box;
+    padding: 0 5px;
+    border-radius: 5px;
+    color: white;
+    display:block;
+    height:30px;
+    background-color: rgba(92, 112, 124, 0.84);
+    margin-bottom: 10px;
+}
+
