@@ -12,10 +12,6 @@ describe("isLastSymbolOperation", function() {
         assert.isTrue(isLastSymbolOperation("232+"));
     });
 
-    it('isLastSymbolOperation_LastSymbolMinus_Success', function() {
-        assert.isTrue(isLastSymbolOperation("11-"));
-    });
-
     it('isLastSymbolOperation_LastSymbolDivide_Success', function() {
         assert.isTrue(isLastSymbolOperation("123/"));
     });
@@ -33,7 +29,7 @@ describe("chooseZeroForExpression", function() {
     });
 
     it('chooseZeroForExpression_ExpressionEndsDigit_Success', function() {
-        assert.equal(chooseZeroForExpression("0."), "0");
+        assert.equal(chooseZeroForExpression("10."), "0");
     });
 
     it('chooseZeroForExpression_ExpressionEndsPlus_Success', function() {
@@ -89,7 +85,7 @@ describe("isLastSymbolDigit", function() {
 describe("getMaxIndex", function() {
 
     it('getMaxIndex_Success', function() {
-        assert.strictEqual(getMaxIndex(2, 1, 3, 6), 6);
+        assert.strictEqual(getMaxIndex(2, 1, 3, 6, 2), 6);
     });
 
 });
@@ -108,4 +104,33 @@ describe("getLastNumber", function() {
         assert.strictEqual(getLastNumber("2+2-345."), "345.");
     });
 
+    it('getLastNumber_LastNumberNegativeNumber_Success', function() {
+        assert.strictEqual(getLastNumber("2+2-(-345)"), "(-345)");
+    });
+
+    it('getLastNumber_LastNumberTwoNegativeNumbers_Success', function() {
+        assert.strictEqual(getLastNumber("2+(-2)-(-345)"), "(-345)");
+    });
+
+    it('getLastNumber_LastNumberTwoNegativeNumbers_Success', function() {
+        assert.strictEqual(getLastNumber("2+(-2)-(-345"), "(-345");
+    });
+
+    it('getLastNumber_LastNumberEmtyNegative_Success', function() {
+        assert.strictEqual(getLastNumber("2+(-2)-(-)"), "(-)");
+    });
+
 });
+
+describe("isCurrentNumberNegative", function() {
+
+    it('isCurrentNumberNegative_NegativeNumber_Success', function() {
+        assert.isTrue(isCurrentNumberNegative("2+2+(-34"));
+    });
+
+    it('isCurrentNumberNegative_Positive_Fail', function() {
+        assert.isFalse(isCurrentNumberNegative("2+2-34"));
+    });
+
+});
+
