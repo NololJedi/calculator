@@ -1,5 +1,12 @@
 'use strict';
 
+import * as math from "mathjs";
+
+math.config({
+    number: 'BigNumber',
+    precision: 10
+});
+
 /*Global constants*/
 const MAX_EXPRESSION_LENGTH = 26;
 const ERROR_MAX_LENGTH_MESSAGE = 'Maximum length was reached';
@@ -8,7 +15,11 @@ const NUMBER_BUTTON_ATTRIBUTE = 'data-number';
 
 /*Utils*/
 function calculateResult(expression) {
-    return eval(expression);
+    try {
+        return math.eval(expression);
+    } catch (e) {
+        return "Error";
+    }
 }
 
 function chooseZeroForExpression(expression) {
@@ -138,15 +149,15 @@ function isLastSymbolMinus(expression) {
 $(function () {
 
     /*Global variables*/
-    let expression = $('#expression');
-    let numbers = getElements('.number');
-    let operations = getElements('.operation');
-    let resultButton = $('#result');
-    let clearButton = $('#clear');
-    let deleteButton = $('#delete');
-    let zeroButton = $('#zero');
-    let digitButton = $('#digit');
-    let isModeOnCheckBox = $('#isModeOn');
+    let expression = $("#expression");
+    let numbers = $(".number");
+    let operations = $(".operation");
+    let resultButton = $("#result");
+    let clearButton = $("#clear");
+    let deleteButton = $("#delete");
+    let zeroButton = $("#zero");
+    let digitButton = $("#digit");
+    let isModeOnCheckBox = $("#isModeOn");
     let isCleanNeed = false;
     let isModeOn = false;
     let isResultNeed = false;
@@ -156,6 +167,7 @@ $(function () {
     /*Operations*/
     function addNumberFromOneToNineToExpression(currentNumber) {
         checkForClean();
+        formatNumber();
         formatNumber();
         let expressionValue = expression.text();
         if (!checkLimit()) {
@@ -195,6 +207,7 @@ $(function () {
         formatMinus();
         formatDigit();
         formatNegative(operation);
+        formatBracket();
         let expressionValue = expression.text();
 
         if (!isLastSymbolOperation(expression.text()) || !isLastSymbolMinus(expression.text())) {
@@ -230,6 +243,8 @@ $(function () {
 
     function addDigitToExpression() {
         checkForClean();
+        formatBracket();
+        formatMinus();
         formatNegative("");
         let expressionValue = expression.text();
 
@@ -255,6 +270,9 @@ $(function () {
         checkForClean();
         formatMinus();
         formatDigit();
+        formatNegative("-");
+        formatNumber();
+        formatBracket();
         let expressionValue = expression.text();
         if (expressionValue.length === 0) {
             expression.text("(-)");
@@ -301,7 +319,6 @@ $(function () {
 
     function calculateExpression() {
         formatNegative("");
-        formatNumber();
         formatDigit();
         formatMinus();
         formatNegative("");
@@ -318,6 +335,8 @@ $(function () {
             return;
         }
 
+        formatBracket();
+
         if (isLastSymbolOperation(expressionValue[0])) {
             expressionValue = expressionValue.substring(1, expressionValue.length);
         }
@@ -333,17 +352,11 @@ $(function () {
     }
 
     /*Utils*/
-    function getElements(elementName) {
-        return document.querySelectorAll(elementName);
-    }
-
     function setListenersToNumbers() {
-        for (let index = 0; index < numbers.length; index++) {
-            numbers[index].onclick = function () {
-                let currentNumber = this.getAttribute(NUMBER_BUTTON_ATTRIBUTE);
-                addNumberFromOneToNineToExpression(currentNumber);
-            }
-        }
+        numbers.click(function () {
+            let currentNumber = this.getAttribute(NUMBER_BUTTON_ATTRIBUTE);
+            addNumberFromOneToNineToExpression(currentNumber);
+        });
         zeroButton.click(addZeroToExpression);
 
         addEventListener('keypress', function (event) {
@@ -358,16 +371,14 @@ $(function () {
     }
 
     function setListenersToOperations() {
-        for (let index = 0; index < operations.length; index++) {
-            operations[index].onclick = function () {
-                let operation = this.getAttribute(OPERATION_BUTTON_ATTRIBUTE);
-                if (operation === "-") {
-                    addMinusToExpression();
-                } else {
-                    addOperationToExpression(operation);
-                }
+        operations.click(function () {
+            let operation = this.getAttribute(OPERATION_BUTTON_ATTRIBUTE);
+            if (operation === "-") {
+                addMinusToExpression();
+            } else {
+                addOperationToExpression(operation);
             }
-        }
+        });
 
         digitButton.click(addDigitToExpression);
 
@@ -502,6 +513,16 @@ $(function () {
         if (currentValue[currentValue.length - 1] === "-"
             && currentValue[currentValue.length - 2] === "(") {
             expression.text(expression.text().substring(0, expression.text().length - 2))
+        }
+    }
+
+    function formatBracket() {
+        if (expression.text()[expression.text().length - 1] === "(") {
+            deleteFromExpression();
+
+            if (isLastSymbolOperation(expression.text()[expression.text().length - 1])) {
+                deleteFromExpression();
+            }
         }
     }
 });
